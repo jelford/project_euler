@@ -59,17 +59,19 @@ impl Iterator for StreamOfPrimes {
 
 pub fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
 
-    let segment_size = if upper_bound > 1000 {
-        (upper_bound as f64).sqrt().ceil() as usize
+    let (segment_size, expected_number_of_primes) = if upper_bound > 1000 {
+        let fupper_bound = upper_bound as f64;
+        (fupper_bound.sqrt().ceil() as usize, (fupper_bound / fupper_bound.log(2_f64)).ceil() as usize)
     } else {
-        (upper_bound + 1) as usize
+        ((upper_bound + 1) as usize, (upper_bound / 2) as usize)
     };
+
 
     let mut initial_seive = vec![true; segment_size + 1];
     initial_seive[0] = false;
     initial_seive[1] = false;
 
-    let mut seed_primes = Vec::with_capacity(segment_size / 2);
+    let mut seed_primes = Vec::with_capacity(expected_number_of_primes);
 
     for i in 2..segment_size {
         if initial_seive[i] {
