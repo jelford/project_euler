@@ -1,4 +1,4 @@
-
+use std::iter::FromIterator;
 
 pub struct StreamOfPrimes {
     seed_primes: Vec<u64>,
@@ -89,14 +89,65 @@ pub fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
     }
 }
 
+#[derive(Debug)]
+pub struct PrimeBag {
+    primes: Vec<u64>,
+}
 
+impl PrimeBag {
+    pub fn merged_with(&self, other: &PrimeBag) -> PrimeBag {
+        let mut pos_self = 0;
+        let mut pos_other = 0;
+        let mut new_primes = Vec::with_capacity(self.primes.len() + other.primes.len());
+        loop {
+            if pos_self >= self.primes.len() || pos_other >= other.primes.len() {
+                break;
+            }
+            if self.primes[pos_self] == other.primes[pos_other] {
+                new_primes.push(self.primes[pos_self]);
+                pos_self += 1;
+                pos_other += 1;
+            } else if self.primes[pos_self] < other.primes[pos_other] {
+                new_primes.push(self.primes[pos_self]);
+                pos_self += 1;
+            } else if self.primes[pos_self] > other.primes[pos_other] {
+                new_primes.push(other.primes[pos_other]);
+                pos_other += 1;
+            }
+        }
 
+        new_primes.extend_from_slice(&self.primes[pos_self..]);
+        new_primes.extend_from_slice(&other.primes[pos_other..]);
+
+        PrimeBag { primes: new_primes }
+    }
+
+    pub fn from<T>(from: T) -> PrimeBag
+        where T: IntoIterator<Item = u64>
+    {
+        PrimeBag { primes: Vec::from_iter(from) }
+    }
+
+    pub fn empty() -> PrimeBag {
+        PrimeBag { primes: vec![] }
+    }
+}
+
+impl IntoIterator for PrimeBag {
+    type Item = u64;
+    type IntoIter = ::std::vec::IntoIter<u64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.primes.into_iter()
+    }
+}
 
 
 #[cfg(test)]
 mod tests {
     use super::stream_of_primes;
-
+    use super::PrimeBag;
+    use std::iter::FromIterator;
 
     #[test]
     fn stream_of_primes_yields_some_primes() {
@@ -122,5 +173,34 @@ mod tests {
         assert_eq!(r,
                    vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
                         71, 73, 79, 83, 89, 97]);
+    }
+
+    #[test]
+    fn merging_disjoint_prime_bags_leaves_us_with_both_sets_of_primes_merged() {
+        let p = PrimeBag::from(vec![2, 3, 5]);
+        let res = p.merged_with(&PrimeBag::from(vec![7, 11, 13]));
+        let result: Vec<u64> = Vec::from_iter(res);
+
+        assert_eq!(result, vec![2, 3, 5, 7, 11, 13]);
+    }
+
+    #[test]
+    fn merging_overlapping_prime_bags_dedups_where_possible() {
+        let p = PrimeBag::from(vec![2, 3, 5]);
+        let res = p.merged_with(&PrimeBag::from(vec![3, 5, 7]));
+
+        let result: Vec<u64> = Vec::from_iter(res);
+
+        assert_eq!(result, vec![2, 3, 5, 7]);
+    }
+
+    #[test]
+    fn merging_prime_bags_with_same_factor_different_number_of_times_takes_the_max() {
+        let p = PrimeBag::from(vec![2, 3, 5, 5]);
+        let res = p.merged_with(&PrimeBag::from(vec![3, 3, 5, 7]));
+
+        let result: Vec<u64> = Vec::from_iter(res);
+
+        assert_eq!(result, vec![2, 3, 3, 5, 5, 7]);
     }
 }

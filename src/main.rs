@@ -4,11 +4,13 @@ mod fizzbuzz;
 mod factorization;
 mod primes;
 mod palindromes;
+mod bitset;
 
 use fib::*;
 use fizzbuzz::*;
 use factorization::*;
 use palindromes::*;
+use primes::*;
 
 fn _01_product_of_threes_and_fives() {
     let result: u64 = (0..1000).filter(is_product_of_3_or_5).sum();
@@ -36,9 +38,14 @@ fn _04_largest_palin_3digit_factors() {
     }
 }
 
-#[cfg(test)]
-mod tests {
+fn _05_smallest_evenly_divisible() {
+    use std::iter::FromIterator;
 
+    let bags: Vec<PrimeBag> = (2..21).map(|i| PrimeBag::from(prime_factors(i))).collect();
+    let merged = bags.iter().fold(PrimeBag::empty(), |pb, next| pb.merged_with(next));
+    let result: u64 = Vec::from_iter(merged).iter().product();
+
+    println!("05: {}", result);
 }
 
 fn main() {
@@ -46,4 +53,5 @@ fn main() {
     _02_sum_of_fibs();
     _03_larges_prime_factor();
     _04_largest_palin_3digit_factors();
+    _05_smallest_evenly_divisible();
 }

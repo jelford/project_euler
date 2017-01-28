@@ -52,7 +52,7 @@ fn step(digits: &Vec<i8>) -> Option<Vec<i8>> {
             return None;
         }
         target -= 1;
-        for i in target+1..limit+1 {
+        for i in target + 1..limit + 1 {
             res[i] = 9;
             mirror(&mut res, i);
         }
