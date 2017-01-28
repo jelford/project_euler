@@ -3,6 +3,7 @@ mod fib;
 mod fizzbuzz;
 mod factorization;
 mod primes;
+mod palindromes;
 
 use fib::*;
 use fizzbuzz::*;
