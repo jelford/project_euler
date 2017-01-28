@@ -2,5 +2,7 @@
 name = "project_euler"
 version = "0.1.0"
 authors = ["James Elford <james.p.elford@gmail.com>"]
+license = "MIT"
+readme = "README"
 
 [dependencies]
