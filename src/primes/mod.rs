@@ -13,12 +13,12 @@ fn primes_from_next_seive_segment(floor: u64, size: usize, seed_primes: &Vec<u64
 
     let mut new_segment = vec![true; size+1];
     for i in seed_primes.iter().take_while(|&x| x.pow(2) < (floor + size as u64)) {
+
         let p = i.clone() as f64;
-
         let start_at = (floor as f64 / p).ceil() as u64;
-        let end_at = ((floor as usize + size) as f64 / p).floor() as u64;
+        let end_at = start_at + (size as f64 / p).floor() as u64;
 
-        for j in start_at..end_at + 1 {
+        for j in start_at..end_at {
             let target = (i * j) - floor;
             new_segment[target as usize] = false;
         }
