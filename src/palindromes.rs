@@ -14,7 +14,6 @@ fn min_in_position(pos: usize, digits: usize) -> i8 {
 }
 
 fn num_from_digits(digits: &Vec<i8>) -> u64 {
-    println!("evaluating {:?}", digits);
     let mut num = 0_u64;
     for &d in digits.iter() {
         num *= 10;
@@ -29,14 +28,24 @@ fn mirror<T: Clone>(v: &mut Vec<T>, pos: usize) {
     v[mirror] = v[pos].clone();
 }
 
+fn palin_offset_limit(len: usize) -> usize {
+    let odd_adjustment = if len % 2 == 1 {
+        1
+    } else {
+        0
+    };
+
+    (len / 2) + odd_adjustment - 1
+}
+
 fn step(digits: &Vec<i8>) -> Option<Vec<i8>> {
     let mut res = digits.clone();
     let mut target = 0;
     let len = res.len();
 
-    let limit = (len / 2) + (if len % 2 == 1 { 1 } else { 0 }) - 1;
+    let limit = palin_offset_limit(len);
 
-    while res[target] == min_in_position(target, res.len()) {
+    while res[target] == min_in_position(target, len) {
         target += 1;
         if target > limit {
             return None;
@@ -49,7 +58,7 @@ fn step(digits: &Vec<i8>) -> Option<Vec<i8>> {
     res[target] -= 1;
     mirror(&mut res, target);
 
-    return Some(res)
+    return Some(res);
 }
 
 impl Iterator for PalindromeStream {
@@ -66,9 +75,7 @@ impl Iterator for PalindromeStream {
 }
 
 fn palindromes_with_number_of_digits(digits: usize) -> PalindromeStream {
-    let mut res = PalindromeStream {
-        current_digits: vec![9; digits],
-    };
+    let mut res = PalindromeStream { current_digits: vec![9; digits] };
     res.current_digits[0] += 1;
     res
 }
@@ -85,25 +92,29 @@ mod tests {
     #[test]
     fn mirror_is_a_noop_for_vec_of_1_lenght() {
         let mut target = vec![5];
-        mirror(&mut target, 0); assert_eq!(target, vec![5]);
+        mirror(&mut target, 0);
+        assert_eq!(target, vec![5]);
     }
 
     #[test]
     fn mirror_duplicates_first_element_for_vec_len_2() {
         let mut target = vec![4, 6];
-        mirror(&mut target, 0); assert_eq!(target, vec![4, 4]);
+        mirror(&mut target, 0);
+        assert_eq!(target, vec![4, 4]);
     }
 
     #[test]
     fn mirror_is_a_noop_for_mid_point() {
         let mut target = vec![4, 6, 73];
-        mirror(&mut target, 1); assert_eq!(target, vec![4, 6, 73]);
+        mirror(&mut target, 1);
+        assert_eq!(target, vec![4, 6, 73]);
     }
 
     #[test]
     fn mirror_dupes_elements_with_offset_in_array() {
         let mut target = vec![4, 6, 73, 5];
-        mirror(&mut target, 1); assert_eq!(target, vec![4, 6, 6, 5]);
+        mirror(&mut target, 1);
+        assert_eq!(target, vec![4, 6, 6, 5]);
     }
 
     #[test]
@@ -112,7 +123,7 @@ mod tests {
         for _ in 0..8 {
             let old = target[0];
             target = step(&target).unwrap();
-            assert_eq!(target[0], old-1);
+            assert_eq!(target[0], old - 1);
         }
     }
 
@@ -134,7 +145,7 @@ mod tests {
 
     #[test]
     fn step_reduces_middle_number_of_three_digits_when_outside_exhausted() {
-        assert_eq!(step(&vec![1, 9, 1]), Some(vec![9,8,9]));
+        assert_eq!(step(&vec![1, 9, 1]), Some(vec![9, 8, 9]));
     }
 
     #[test]
@@ -169,7 +180,7 @@ mod tests {
         let r: HashSet<u64> = HashSet::from_iter(ps);
 
         for i in 1..9 {
-            assert_is_palindrome(i*11, &r);
+            assert_is_palindrome(i * 11, &r);
         }
     }
 
