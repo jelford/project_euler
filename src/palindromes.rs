@@ -1,7 +1,7 @@
 
 use std::mem;
 
-struct PalindromeStream {
+pub struct PalindromeStream {
     current_digits: Vec<i8>,
 }
 
@@ -40,17 +40,19 @@ fn palin_offset_limit(len: usize) -> usize {
 
 fn step(digits: &Vec<i8>) -> Option<Vec<i8>> {
     let mut res = digits.clone();
-    let mut target = 0;
+
     let len = res.len();
 
     let limit = palin_offset_limit(len);
+    let mut target = limit;
 
     while res[target] == min_in_position(target, len) {
-        target += 1;
-        if target > limit {
+        let next_target = target as isize - 1;
+        if next_target < 0 {
             return None;
         }
-        for i in 0..target {
+        target -= 1;
+        for i in target+1..limit+1 {
             res[i] = 9;
             mirror(&mut res, i);
         }
@@ -74,9 +76,9 @@ impl Iterator for PalindromeStream {
     }
 }
 
-fn palindromes_with_number_of_digits(digits: usize) -> PalindromeStream {
+pub fn palindromes_with_number_of_digits(digits: usize) -> PalindromeStream {
     let mut res = PalindromeStream { current_digits: vec![9; digits] };
-    res.current_digits[0] += 1;
+    res.current_digits[palin_offset_limit(digits)] += 1;
     res
 }
 
@@ -88,6 +90,7 @@ mod tests {
     use super::num_from_digits;
     use super::step;
     use super::mirror;
+    use super::palin_offset_limit;
 
     #[test]
     fn mirror_is_a_noop_for_vec_of_1_lenght() {
@@ -136,16 +139,16 @@ mod tests {
     }
 
     #[test]
-    fn step_reduces_outside_numbers_of_3_digits() {
-        assert_eq!(step(&vec![9, 9, 9]), Some(vec![8, 9, 8]));
-        assert_eq!(step(&vec![8, 9, 8]), Some(vec![7, 9, 7]));
-        assert_eq!(step(&vec![7, 9, 7]), Some(vec![6, 9, 6]));
-        assert_eq!(step(&vec![2, 9, 2]), Some(vec![1, 9, 1]));
+    fn step_reduces_less_significant_digits_first() {
+        assert_eq!(step(&vec![9, 9, 9]), Some(vec![9, 8, 9]));
+        assert_eq!(step(&vec![8, 9, 8]), Some(vec![8, 8, 8]));
+        assert_eq!(step(&vec![7, 9, 7]), Some(vec![7, 8, 7]));
+        assert_eq!(step(&vec![2, 9, 2]), Some(vec![2, 8, 2]));
     }
 
     #[test]
-    fn step_reduces_middle_number_of_three_digits_when_outside_exhausted() {
-        assert_eq!(step(&vec![1, 9, 1]), Some(vec![9, 8, 9]));
+    fn step_goes_from_reducing_middle_to_reducing_outside_when_middle_exhausted() {
+        assert_eq!(step(&vec![9, 0, 9]), Some(vec![8, 9, 8]));
     }
 
     #[test]
@@ -184,6 +187,16 @@ mod tests {
         }
     }
 
+    #[test]
+    fn limit_gives_midpoint_of_vector() {
+        assert_eq!(palin_offset_limit(1), 0);
+        assert_eq!(palin_offset_limit(2), 0);
+        assert_eq!(palin_offset_limit(3), 1);
+        assert_eq!(palin_offset_limit(5), 2);
+        assert_eq!(palin_offset_limit(6), 2);
+        assert_eq!(palin_offset_limit(7), 3);
+    }
+
     fn assert_is_palindrome(target: u64, palindromes: &HashSet<u64>) {
         assert!(palindromes.contains(&target),
                 "{} not considered palindromic",
@@ -213,5 +226,14 @@ mod tests {
     fn covers_all_length_5_palindromes() {
         let r = palindromes_with_number_of_digits(5).collect::<Vec<_>>();
         assert_eq!(r.len(), 900);
+    }
+
+    #[test]
+    fn palindroms_are_generated_in_descending_order() {
+        let mut last = 10_u64.pow(7);
+        for p in palindromes_with_number_of_digits(6).take(100) {
+            assert!(p < last);
+            last = p;
+        }
     }
 }

@@ -2,31 +2,7 @@
 use primes::*;
 
 pub fn highest_prime_factor(target: u64) -> u64 {
-    if target == 1 {
-        return 1;
-    }
-
-    let seive_size = (target as f64).sqrt().ceil() as u64;
-    let mut seive = stream_of_primes(seive_size);
-
-    let mut t = target;
-    let mut factor: u64 = 2;
-
-    loop {
-        if t == factor || t < factor {
-            return t;
-        }
-
-        if t % factor == 0 {
-            t = t / factor;
-        } else {
-            if let Some(f) = seive.next() {
-                factor = f;
-            } else {
-                return t;
-            }
-        }
-    }
+    prime_factors(target).last().unwrap().clone()
 }
 
 pub fn prime_factors(target: u64) -> Vec<u64> {
@@ -66,11 +42,65 @@ pub fn prime_factors(target: u64) -> Vec<u64> {
 }
 
 
+pub fn has_n_digit_factors(num: u64, digits: u32) -> bool {
+    let (lower_lim, upper_lim) = (10_u64.pow(digits-1), 10_u64.pow(digits));
+
+    let sqrt = (num as f64).sqrt();
+
+    if (sqrt < lower_lim as f64)  || ((upper_lim as f64) < sqrt) {
+        println!("sqrt: {}, lower: {}, upper: {}", sqrt, lower_lim, upper_lim);
+        return false;
+    }
+
+    let (mut up, mut down) = (sqrt.ceil() as u64, sqrt.floor() as u64);
+
+    let mut prod = up * down;
+    while prod != num {
+        if prod > num {
+            down -= 1;
+        } else {
+            up += 1;
+        }
+        if down < lower_lim || up > upper_lim {
+            return false;
+        }
+        prod = up * down;
+    }
+    return true;
+}
+
+
 #[cfg(test)]
 mod tests {
 
     use super::highest_prime_factor;
     use super::prime_factors;
+    use super::has_n_digit_factors;
+
+    #[test]
+    fn has_3_digit_factors_correctly_identifies_some_positive_cases() {
+        assert!(has_n_digit_factors(123*456, 3));
+        assert!(has_n_digit_factors(425*183, 3));
+        assert!(has_n_digit_factors(740*777, 3));
+        assert!(has_n_digit_factors(124*891, 3));
+    }
+
+    #[test]
+    fn has_3_digit_factors_correctly_identifies_some_negative_cases() {
+        assert!(!has_n_digit_factors(1, 3));
+        assert!(!has_n_digit_factors(100, 3));
+        assert!(!has_n_digit_factors(9999, 3));
+        assert!(!has_n_digit_factors(10001, 3));
+    }
+
+    #[test]
+    fn no_factor_of_a_three_digit_number_can_be_missed() {
+        for i in 100..1000 {
+            for j in 100..1000 {
+                assert!(has_n_digit_factors(i * j, 3));
+            }
+        }
+    }
 
     #[test]
     fn hpf_of_1_is_1() {
