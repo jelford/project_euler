@@ -1,16 +1,10 @@
+extern crate project_euler;
 
-mod fib;
-mod fizzbuzz;
-mod factorization;
-mod primes;
-mod palindromes;
-mod bitset;
-
-use fib::*;
-use fizzbuzz::*;
-use factorization::*;
-use palindromes::*;
-use primes::*;
+use project_euler::fib::*;
+use project_euler::fizzbuzz::*;
+use project_euler::factorization::*;
+use project_euler::palindromes::*;
+use project_euler::primes::*;
 
 fn _01_product_of_threes_and_fives() {
     let result: u64 = (0..1000).filter(is_product_of_3_or_5).sum();
