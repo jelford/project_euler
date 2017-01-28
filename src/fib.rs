@@ -1,11 +1,14 @@
 
 pub struct FibonacciSeries {
-    prev_1 : u64,
-    prev_0 : u64,
+    prev_1: u64,
+    prev_0: u64,
 }
 
 pub fn fib_series() -> FibonacciSeries {
-    FibonacciSeries { prev_1: 0, prev_0: 1 }
+    FibonacciSeries {
+        prev_1: 0,
+        prev_0: 1,
+    }
 }
 
 impl Iterator for FibonacciSeries {

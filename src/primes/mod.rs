@@ -1,6 +1,6 @@
 
 
-struct StreamOfPrimes {
+pub struct StreamOfPrimes {
     seed_primes: Vec<u64>,
     current_index: usize,
     segment_size: usize,
@@ -17,7 +17,7 @@ fn primes_from_next_seive_segment(floor: u64, size: usize, seed_primes: &Vec<u64
         let start_at = (floor as f64 / p).ceil() as u64;
         let end_at = ((floor as usize + size) as f64 / p).floor() as u64;
 
-        for j in start_at..end_at+1 {
+        for j in start_at..end_at + 1 {
             let target = (i * j) - floor;
             new_segment[target as usize] = false;
         }
@@ -42,7 +42,9 @@ impl Iterator for StreamOfPrimes {
             Some(self.seed_primes[current_index])
         } else {
 
-            let mut next_segment = primes_from_next_seive_segment(self.next_segment_floor, self.segment_size, &self.seed_primes);
+            let mut next_segment = primes_from_next_seive_segment(self.next_segment_floor,
+                                                                  self.segment_size,
+                                                                  &self.seed_primes);
 
             self.seed_primes.append(&mut next_segment);
 
@@ -55,7 +57,7 @@ impl Iterator for StreamOfPrimes {
 
 
 
-fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
+pub fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
     let segment_size = (upper_bound as f64).sqrt().ceil() as usize;
 
     let mut initial_seive = vec![true; segment_size + 1];
@@ -66,8 +68,8 @@ fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
 
     for i in 2..segment_size {
         if initial_seive[i] {
-            for j in i..(segment_size/i) {
-                initial_seive[i*j] = false
+            for j in i..(segment_size / i) {
+                initial_seive[i * j] = false
             }
             seed_primes.push(i as u64);
         }
@@ -83,67 +85,12 @@ fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
 
 
 
-pub fn highest_prime_factor(target: u64) -> u64 {
-    if target == 1 {
-        return 1;
-    }
-
-    let seive_size = (target as f64).sqrt().ceil() as u64;
-    let mut seive = stream_of_primes(seive_size);
-
-    let mut t = target;
-    let mut factor : u64 = 2;
-
-    loop {
-        if t == factor || t < factor {
-            return t;
-        }
-
-        if t % factor == 0 {
-            t = t / factor;
-        } else {
-            factor = seive.next().unwrap();
-        }
-    }
-}
 
 
 #[cfg(test)]
 mod tests {
-    use super::highest_prime_factor;
     use super::stream_of_primes;
 
-    #[test]
-    fn hpf_of_1_is_1() {
-        assert_eq!(highest_prime_factor(1), 1);
-    }
-
-    #[test]
-    fn hpf_returns_primes() {
-        assert_eq!(highest_prime_factor(5), 5);
-        assert_eq!(highest_prime_factor(1), 1);
-        assert_eq!(highest_prime_factor(2), 2);
-        assert_eq!(highest_prime_factor(13), 13);
-    }
-
-    #[test]
-    fn hpf_finds_factors_of_large_numbers() {
-        assert_eq!(highest_prime_factor(1003), 59);
-    }
-
-    #[test]
-    fn hpf_finds_two_as_a_factor() {
-        assert_eq!(highest_prime_factor(4), 2);
-        assert_eq!(highest_prime_factor(8), 2);
-        assert_eq!(highest_prime_factor(128), 2);
-    }
-
-    #[test]
-    fn hpf_finds_three_as_a_factor() {
-        assert_eq!(highest_prime_factor(9), 3);
-        assert_eq!(highest_prime_factor(12), 3);
-        assert_eq!(highest_prime_factor(81), 3);
-    }
 
     #[test]
     fn stream_of_primes_yields_some_primes() {

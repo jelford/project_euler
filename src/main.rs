@@ -1,11 +1,12 @@
 
 mod fib;
 mod fizzbuzz;
+mod factorization;
 mod primes;
 
 use fib::*;
 use fizzbuzz::*;
-use primes::*;
+use factorization::*;
 
 fn _01_product_of_threes_and_fives() {
     let result: u64 = (0..1000).filter(is_product_of_3_or_5).sum();
