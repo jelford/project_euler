@@ -5,6 +5,7 @@ use project_euler::fizzbuzz::*;
 use project_euler::factorization::*;
 use project_euler::palindromes::*;
 use project_euler::primes::*;
+use project_euler::series::*;
 
 fn _01_product_of_threes_and_fives() {
     let result: u64 = (0..1000).filter(is_product_of_3_or_5).sum();
@@ -42,10 +43,22 @@ fn _05_smallest_evenly_divisible() {
     println!("05: {}", result);
 }
 
+fn _06_sum_of_squares_v_square_of_sum() {
+
+    let sum = sum_of_i(100_u64);
+    let square_of_sum = sum.pow(2);
+
+    let sum_of_squares = sum_of_squares_i(100);
+
+    let diff = square_of_sum - sum_of_squares;
+    println!("06: {}", diff);
+}
+
 fn main() {
     _01_product_of_threes_and_fives();
     _02_sum_of_fibs();
     _03_larges_prime_factor();
     _04_largest_palin_3digit_factors();
     _05_smallest_evenly_divisible();
+    _06_sum_of_squares_v_square_of_sum();
 }
