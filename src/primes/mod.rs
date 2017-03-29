@@ -11,16 +11,21 @@ pub struct StreamOfPrimes {
 fn primes_from_next_seive_segment(floor: u64, size: usize, seed_primes: &Vec<u64>) -> Vec<u64> {
     let mut result = Vec::with_capacity(size / 2);
 
-    let mut new_segment = vec![true; size+1];
-    for i in seed_primes.iter().take_while(|&x| x.pow(2) < (floor + size as u64)) {
+    let mut new_segment = vec![true; size];
+    let upper_bound = floor + size as u64;
+    for i in seed_primes.iter().take_while(|&x| x.pow(2) < upper_bound) {
 
         let p = i.clone() as f64;
         let start_at = (floor as f64 / p).ceil() as u64;
-        let end_at = start_at + (size as f64 / p).floor() as u64;
 
-        for j in start_at..end_at {
-            let target = (i * j) - floor;
-            new_segment[target as usize] = false;
+        for j in start_at.. {
+            let non_prime = i*j;
+            if non_prime >= floor + size as u64 {
+                break;
+            }
+
+            let target = (non_prime - floor) as usize;
+            new_segment[target] = false;
         }
     }
 
@@ -67,7 +72,7 @@ pub fn stream_of_primes(upper_bound: u64) -> StreamOfPrimes {
     };
 
 
-    let mut initial_seive = vec![true; segment_size + 1];
+    let mut initial_seive = vec![true; segment_size+1];
     initial_seive[0] = false;
     initial_seive[1] = false;
 
@@ -175,6 +180,12 @@ mod tests {
         assert_eq!(r,
                    vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
                         71, 73, 79, 83, 89, 97]);
+    }
+
+    #[test]
+    fn streame_of_primes_remains_accurrate_for_large_numbers() {
+        let r = stream_of_primes(15000000).nth(3939).unwrap();
+        assert_eq!(r, 37189);
     }
 
     #[test]

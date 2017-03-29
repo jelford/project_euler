@@ -54,6 +54,14 @@ fn _06_sum_of_squares_v_square_of_sum() {
     println!("06: {}", diff);
 }
 
+fn _07_10001st_prime() {
+    // p(n is prime) is about 1/ln(n)
+    // ln(10001) is a bit more than 9, so shoudnt need to go above 10*10001
+    let p = stream_of_primes(15*10001).nth(10000).unwrap();
+
+    println!("07: {}", p);
+}
+
 fn main() {
     _01_product_of_threes_and_fives();
     _02_sum_of_fibs();
@@ -61,4 +69,5 @@ fn main() {
     _04_largest_palin_3digit_factors();
     _05_smallest_evenly_divisible();
     _06_sum_of_squares_v_square_of_sum();
+    _07_10001st_prime();
 }
