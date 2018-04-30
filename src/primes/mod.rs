@@ -338,7 +338,6 @@ mod tests {
 
     mod prime_bag {
         use super::PrimeBag;
-        use std::iter::FromIterator;
 
         pub fn from(ints: &[u64]) -> PrimeBag {
             PrimeBag::from(ints)
@@ -346,6 +345,7 @@ mod tests {
 
         mod lowest_common_multiple {
             use super::*;
+            use std::iter::FromIterator;
 
             #[test]
             fn merging_disjoint_prime_bags_leaves_us_with_both_sets_of_primes_merged() {
@@ -389,9 +389,8 @@ mod tests {
                 let q = from(&vec![3, 5, 7]);
 
                 let result = p.multiply(&q);
-                let result: Vec<u64> = Vec::from_iter(result);
 
-                assert_eq!(result, vec![2, 3, 3, 5, 5, 7]);
+                assert_eq!(result, from(&[2, 3, 3, 5, 5, 7]));
             }
         }
 
