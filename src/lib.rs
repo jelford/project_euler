@@ -1,5 +1,3 @@
-#![feature(inclusive_range_syntax)]
-
 pub mod fib;
 pub mod fizzbuzz;
 pub mod factorization;

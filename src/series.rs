@@ -19,12 +19,12 @@ mod tests {
     use super::*;
 
     fn naive_sum_of_i(n: u64) -> u64 {
-        let v = 1...n;
+        let v = 1..=n;
         v.sum()
     }
 
     fn naive_sum_of_squares(n: u64) -> u64 {
-        let v = 1...n;
+        let v = 1..=n;
         v.map(|v| v*v).sum()
     }
 
