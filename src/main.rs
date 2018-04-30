@@ -6,6 +6,7 @@ use project_euler::factorization::*;
 use project_euler::palindromes::*;
 use project_euler::primes::*;
 use project_euler::series::*;
+use project_euler::pythagorian_triplets::*;
 
 fn _01_product_of_threes_and_fives() {
     let result: u64 = (0..1000).filter(is_product_of_3_or_5).sum();
@@ -94,6 +95,16 @@ fn _08_largest_seqprod_in_series() {
     
 }
 
+fn _09_pythagorian_triplets() {
+    
+    for i in pythagorian_triplet_stream() {
+        if i.a + i.b + i.c == 1000 {
+            println!("09: {}", i.a * i.b * i.c);
+            break;
+        }
+    }
+}
+
 fn main() {
     _01_product_of_threes_and_fives();
     _02_sum_of_fibs();
@@ -103,4 +114,5 @@ fn main() {
     _06_sum_of_squares_v_square_of_sum();
     _07_10001st_prime();
     _08_largest_seqprod_in_series();
+    _09_pythagorian_triplets();
 }
