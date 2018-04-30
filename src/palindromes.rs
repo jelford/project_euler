@@ -1,4 +1,3 @@
-
 use std::mem;
 
 pub struct PalindromeStream {
@@ -29,11 +28,7 @@ fn mirror<T: Clone>(v: &mut Vec<T>, pos: usize) {
 }
 
 fn palin_offset_limit(len: usize) -> usize {
-    let odd_adjustment = if len % 2 == 1 {
-        1
-    } else {
-        0
-    };
+    let odd_adjustment = if len % 2 == 1 { 1 } else { 0 };
 
     (len / 2) + odd_adjustment - 1
 }
@@ -77,20 +72,22 @@ impl Iterator for PalindromeStream {
 }
 
 pub fn palindromes_with_number_of_digits(digits: usize) -> PalindromeStream {
-    let mut res = PalindromeStream { current_digits: vec![9; digits] };
+    let mut res = PalindromeStream {
+        current_digits: vec![9; digits],
+    };
     res.current_digits[palin_offset_limit(digits)] += 1;
     res
 }
 
 #[cfg(test)]
 mod tests {
+    use super::mirror;
+    use super::num_from_digits;
+    use super::palin_offset_limit;
+    use super::palindromes_with_number_of_digits;
+    use super::step;
     use std::collections::HashSet;
     use std::iter::FromIterator;
-    use super::palindromes_with_number_of_digits;
-    use super::num_from_digits;
-    use super::step;
-    use super::mirror;
-    use super::palin_offset_limit;
 
     #[test]
     fn mirror_is_a_noop_for_vec_of_1_lenght() {
@@ -198,9 +195,11 @@ mod tests {
     }
 
     fn assert_is_palindrome(target: u64, palindromes: &HashSet<u64>) {
-        assert!(palindromes.contains(&target),
-                "{} not considered palindromic",
-                target);
+        assert!(
+            palindromes.contains(&target),
+            "{} not considered palindromic",
+            target
+        );
     }
 
     #[test]

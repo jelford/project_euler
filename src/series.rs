@@ -1,18 +1,19 @@
-use std::ops::{Add, Mul, Div};
+use std::ops::{Add, Div, Mul};
 
 pub fn sum_of_i<T, R, Q>(n: T) -> Q::Output
-    where T : Add<Output=R> + Copy + Mul<R, Output=Q> + From<u8>,
-        Q : Div + From<u8>
-    {
-        ((n) * (n+T::from(1_u8))) / Q::from(2_u8)
+where
+    T: Add<Output = R> + Copy + Mul<R, Output = Q> + From<u8>,
+    Q: Div + From<u8>,
+{
+    ((n) * (n + T::from(1_u8))) / Q::from(2_u8)
 }
 
 pub fn sum_of_squares_i<T>(n: T) -> T
-where T : Add<Output=T> + Copy + Mul<Output=T> + From<u8> + Div<Output=T>
+where
+    T: Add<Output = T> + Copy + Mul<Output = T> + From<u8> + Div<Output = T>,
 {
     n * (n + T::from(1_u8)) * ((T::from(2) * n) + T::from(1)) / T::from(6)
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -25,7 +26,7 @@ mod tests {
 
     fn naive_sum_of_squares(n: u64) -> u64 {
         let v = 1..=n;
-        v.map(|v| v*v).sum()
+        v.map(|v| v * v).sum()
     }
 
     #[test]

@@ -1,10 +1,6 @@
-
-
 pub fn is_product_of_3_or_5(n: &u64) -> bool {
     n % 3 == 0 || n % 5 == 0
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -27,7 +23,6 @@ mod tests {
         assert!(is_product_of_3_or_5(&120));
         assert!(is_product_of_3_or_5(&10000));
     }
-
 
     #[test]
     fn is_product_of_3_or_5_false_for_multiples_of_neither() {

@@ -1,13 +1,11 @@
-
-use primes::*;
 use bitset::*;
+use primes::*;
 
 pub fn highest_prime_factor(target: u64) -> u64 {
     prime_factors(target).last().unwrap().clone()
 }
 
 pub fn prime_factors(target: u64) -> Vec<u64> {
-
     if target == 1 {
         return vec![1];
     }
@@ -54,7 +52,6 @@ pub fn factors(num: u64) -> Vec<u64> {
     facs
 }
 
-
 pub fn has_n_digit_factors(num: u64, digits: u32) -> bool {
     let (lower_lim, upper_lim) = (10_u64.pow(digits - 1), 10_u64.pow(digits));
 
@@ -82,14 +79,13 @@ pub fn has_n_digit_factors(num: u64, digits: u32) -> bool {
     return true;
 }
 
-
 #[cfg(test)]
 mod tests {
 
+    use super::factors;
+    use super::has_n_digit_factors;
     use super::highest_prime_factor;
     use super::prime_factors;
-    use super::has_n_digit_factors;
-    use super::factors;
 
     #[test]
     fn has_3_digit_factors_correctly_identifies_some_positive_cases() {

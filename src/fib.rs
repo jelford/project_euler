@@ -1,4 +1,3 @@
-
 pub struct FibonacciSeries {
     prev_1: u64,
     prev_0: u64,
@@ -20,7 +19,6 @@ impl Iterator for FibonacciSeries {
         Some(res)
     }
 }
-
 
 #[cfg(test)]
 mod tests {

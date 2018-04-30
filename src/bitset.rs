@@ -1,4 +1,3 @@
-
 pub fn powerset<T: Clone>(target: &Vec<T>) -> Vec<Vec<T>> {
     let top = 2_u64.pow(target.len() as u32);
     let mut res = Vec::with_capacity(top as usize);
@@ -26,17 +25,19 @@ mod tests {
 
     #[test]
     fn powerset_of_three_numbers_yields_eight_sets() {
-        assert_eq!(powerset(&vec![1, 2, 3]),
-                   vec![
-            vec![],
-            vec![1],
-            vec![2],
-            vec![1,2],
-            vec![3],
-            vec![1, 3],
-            vec![2, 3],
-            vec![1,2,3],
-        ]);
+        assert_eq!(
+            powerset(&vec![1, 2, 3]),
+            vec![
+                vec![],
+                vec![1],
+                vec![2],
+                vec![1, 2],
+                vec![3],
+                vec![1, 3],
+                vec![2, 3],
+                vec![1, 2, 3],
+            ]
+        );
     }
 
     #[test]
